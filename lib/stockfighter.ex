@@ -48,14 +48,12 @@ defmodule StockfighterAPI do
 
   def stock_orders(venue, stock) do
     s = "venues/"<> venue <> "/stocks/" <> stock
-    s_orders = StockfighterIO.get(s).body
-    s_orders
+    StockfighterIO.get(s).body
   end
 
   def stock_quote(venue, stock) do
     s = "venues/"<> venue <> "/stocks/" <> stock <> "/quote"
-    s_orders = StockfighterIO.get(s).body
-    s_orders
+    StockfighterIO.get(s).body
   end
 end
 
