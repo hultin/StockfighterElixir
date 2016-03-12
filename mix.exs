@@ -14,7 +14,7 @@ defmodule Stockfighter.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :httpotion]]
+    [applications: [:logger, :httpotion, :exconstructor]]
   end
 
   # Dependencies can be Hex packages:
@@ -30,7 +30,8 @@ defmodule Stockfighter.Mixfile do
     [
       {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
       {:httpotion, "~> 2.1.0"},
-      {:poison, "~> 1.5"}
+      {:poison, "~> 1.5"},
+      {:exconstructor, "~> 0.9.0"},
     ]
   end
 end

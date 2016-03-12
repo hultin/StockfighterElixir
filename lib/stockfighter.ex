@@ -13,7 +13,7 @@ defmodule StockfighterIO do
     body 
     |> IO.iodata_to_binary 
     |> Poison.decode!
-    |> key_to_atom
+    # |> IO.inspect
   end
 
   def process_request_headers(headers) do
@@ -33,29 +33,29 @@ defmodule StockfighterIO do
 
 end
 
-defmodule StockfighterAPI do
+# defmodule StockfighterAPI do
 
-  def venue_heartbeat(venue) do
-    s = "venues/"<> venue <> "/heartbeat"
-    StockfighterIO.get(s).body[:ok] == true
-  end
+#   def venue_heartbeat(venue) do
+#     s = "venues/"<> venue <> "/heartbeat"
+#     StockfighterIO.get(s).body[:ok] == true
+#   end
 
-  def list_stocks(venue) do
-    s = "venues/"<> venue <> "/stocks"
-    list_of_stocks = StockfighterIO.get(s).body[:symbols]
-    for i <- list_of_stocks, do: i.symbol
-  end
+#   def list_stocks(venue) do
+#     s = "venues/"<> venue <> "/stocks"
+#     list_of_stocks = StockfighterIO.get(s).body[:symbols]
+#     for i <- list_of_stocks, do: i.symbol
+#   end
 
-  def stock_orders(venue, stock) do
-    s = "venues/"<> venue <> "/stocks/" <> stock
-    StockfighterIO.get(s).body
-  end
+#   def stock_orders(venue, stock) do
+#     s = "venues/"<> venue <> "/stocks/" <> stock
+#     StockfighterIO.get(s).body
+#   end
 
-  def stock_quote(venue, stock) do
-    s = "venues/"<> venue <> "/stocks/" <> stock <> "/quote"
-    StockfighterIO.get(s).body
-  end
-end
+#   def stock_quote(venue, stock) do
+#     s = "venues/"<> venue <> "/stocks/" <> stock <> "/quote"
+#     StockfighterIO.get(s).body
+#   end
+# end
 
 defmodule Order do
   @derive [Poison.Encoder]
@@ -187,3 +187,15 @@ end
 # raise "Oh no the world is on fire!" unless ok
 
 # %Job{account: "BAM76157239", goal: 1000000, maxPrice: 6455, maxSize: 20000, symbol: "OPI", venue: "VHEX"}
+# %Job{account: "CB95531829", goal: 1000000, maxPrice: 6455, maxSize: 20000, symbol: "EUHE", venue: "TEWUEX"}
+# defmodule Stock do
+#   defstruct account: "EXB123456",
+#             venue: "TESTEX",
+#             symbol: "FOOBAR",
+
+# end
+
+# defmodule RecordMovment do
+#   def rec %Stock{} do
+#     IO.inspect 
+# end
