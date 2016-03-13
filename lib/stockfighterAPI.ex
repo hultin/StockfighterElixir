@@ -127,4 +127,67 @@ defmodule StockfighterAPI.StockQuote do
   end
 end
 
+defmodule StockfighterAPI.OrderStatus do
+  defmodule Fills do
+    defstruct price: 0,
+              qty: 0,
+              ts: ""
+    use ExConstructor
 
+    def new_fromList(listOfOffers) do
+      if is_list(listOfOffers) do 
+        Enum.map(listOfOffers, fn(x) -> Fills.new(x) end)
+      else
+        []
+      end
+    end
+  end
+
+  defstruct ok: false,
+            symbol: "",
+            venue: "",
+            direction: "",
+            originalQty: 0,
+            qty: 0,   # this is the quantity *left outstanding*
+            price: 0, # the price on the order -- may not match that of fills!
+            orderType: "",
+            id: 0, # guaranteed unique *on this venue*
+            account: "",
+            ts: "", # ISO-8601 timestamp for when we received order
+            fills: [], # may have zero or multiple fills.  Note this order presumably has a total of 80 shares worth 
+            totalFilled: 0,
+            open: false
+ 
+  @spec new(ExConstructor.map_or_kwlist) :: %__MODULE__{}
+  def new(map_or_kwlist) do
+    s = ExConstructor.populate_struct(%__MODULE__{}, map_or_kwlist)
+    fills = Fills.new_fromList(s.fills)
+    %__MODULE__{s | fills: fills}
+  end
+
+  def get(venue, stock, orderID) do
+    s = "venues/"<> venue <> "/stocks/" <> stock <> "/orders/" <> to_string(orderID)
+    StockfighterIO.get(s).body
+    |> new
+  end
+end
+
+defmodule StockfighterAPI.Order do
+  @derive [Poison.Encoder]
+  
+  defstruct account: "",
+            venue: "",
+            symbol: "",
+            price: 0,
+            qty: 0,
+            direction: "buy",
+            orderType: "immediate-or-cancel"
+  
+  def place(order) do
+    s = "venues/"<> order.venue <> "/stocks/" <> order.symbol <> "/orders"
+    orderJSON = Poison.encode! order
+    IO.inspect order
+    StockfighterIO.post(s, [body: orderJSON]).body
+    |> StockfighterAPI.OrderStatus.new
+  end
+end
