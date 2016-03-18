@@ -130,7 +130,12 @@ end
 defmodule Level1 do
   def start do
     # j = %Job{account: "RMS68876395", goal: 100000, inv: 100, maxPrice: 3945, maxSize: 300, symbol: "IAEJ", venue: "WULOEX"}   
+    # j = %Job{account: "HB4225042", symbol: "FOOBAR", venue: "TESTEX", goal: 100000, inv: 100, maxPrice: 4340, maxSize: 500}   
     j = %Job{account: "HB4225042", symbol: "SKC", venue: "PUIZEX", goal: 100000, inv: 100, maxPrice: 4340, maxSize: 500}   
     Job.run(j, 400)
+  end
+
+  def test(%{account: a, venue: v}) do
+    IO.puts "account: #{a}, venue: #{v}"
   end
 end

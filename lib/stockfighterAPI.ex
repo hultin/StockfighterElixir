@@ -3,12 +3,14 @@ defmodule StockfighterAPI.CheckVenueIsUp do
             venue: ""
   use ExConstructor
 
+  def get(%{venue: v}), do: get(v)
   def get(venue) do
     s = "venues/"<> venue <> "/heartbeat"
     StockfighterIO.get(s).body
     |> new
   end
 
+  def is_up?(%{venue: v}), do: get(v)
   def is_up?(venue) do
     %StockfighterAPI.CheckVenueIsUp{ok: state} = get(venue)
     state == true
@@ -59,6 +61,7 @@ defmodule StockfighterAPI.StockOnVenue do
     %__MODULE__{s | symbols: symbols}
   end
 
+  def get(%{venue: v}), do: get(v)
   def get(venue) do
     s = "venues/"<> venue <> "/stocks"
     StockfighterIO.get(s).body |> new
@@ -96,8 +99,9 @@ defmodule StockfighterAPI.Orderbook do
     %__MODULE__{s | asks: asks, bids: bids}
   end
 
-  def get(venue, stock) do
-    s = "venues/"<> venue <> "/stocks/" <> stock
+  def get(%{venue: v, symbol: s}), do: get(v, s)
+  def get(venue, symbol) do
+    s = "venues/"<> venue <> "/stocks/" <> symbol
     StockfighterIO.get(s).body |> new
   end
 end
@@ -120,6 +124,7 @@ defmodule StockfighterAPI.StockQuote do
 
   use ExConstructor
 
+  def get(%{venue: v, symbol: s}), do: get(v, s)
   def get(venue, stock) do
     s = "venues/"<> venue <> "/stocks/" <> stock <> "/quote"
     StockfighterIO.get(s).body
@@ -165,6 +170,7 @@ defmodule StockfighterAPI.OrderStatus do
     %__MODULE__{s | fills: fills}
   end
 
+  def get(%{venue: v, symbol: s, id: id}), do: get(v, s, id)
   def get(venue, stock, orderID) do
     s = "venues/"<> venue <> "/stocks/" <> stock <> "/orders/" <> to_string(orderID)
     StockfighterIO.get(s).body
