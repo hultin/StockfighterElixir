@@ -176,6 +176,15 @@ defmodule StockfighterAPI.OrderStatus do
     StockfighterIO.get(s).body
     |> new
   end
+
+  def cancel(%{venue: v, symbol: s, id: id}), do: cancel(v, s, id)
+  def cancel(venue, stock, orderID) do
+    s = "venues/"<> venue <> "/stocks/" <> stock <> "/orders/" <> to_string(orderID)
+    StockfighterIO.delete(s).body
+    |> new
+  end
+
+  def filled?(%{originalQty: oq, totalFilled: tf}), do: tf >= oq
 end
 
 defmodule StockfighterAPI.Order do
@@ -192,7 +201,6 @@ defmodule StockfighterAPI.Order do
   def place(order) do
     s = "venues/"<> order.venue <> "/stocks/" <> order.symbol <> "/orders"
     orderJSON = Poison.encode! order
-    IO.inspect order
     StockfighterIO.post(s, [body: orderJSON]).body
     |> StockfighterAPI.OrderStatus.new
   end

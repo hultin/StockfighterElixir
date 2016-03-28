@@ -1,28 +1,17 @@
+alias StockfighterAPI.{Order, OrderStatus}
 
+defmodule Stockfighter do
+  use Application
 
-# defmodule StockfighterAPI do
+  def start(_type, _args) do
+    :observer.start
+    # OrderWorker.Supervisor.start_link
+    OrderRecordSup.start_link(:nrOne)
+  end
 
-#   def venue_heartbeat(venue) do
-#     s = "venues/"<> venue <> "/heartbeat"
-#     StockfighterIO.get(s).body[:ok] == true
-#   end
+  def ttt, do: OrderRecord.newOrder(:nrOne, OrderRecord.tOrder)
+end
 
-#   def list_stocks(venue) do
-#     s = "venues/"<> venue <> "/stocks"
-#     list_of_stocks = StockfighterIO.get(s).body[:symbols]
-#     for i <- list_of_stocks, do: i.symbol
-#   end
-
-#   def stock_orders(venue, stock) do
-#     s = "venues/"<> venue <> "/stocks/" <> stock
-#     StockfighterIO.get(s).body
-#   end
-
-#   def stock_quote(venue, stock) do
-#     s = "venues/"<> venue <> "/stocks/" <> stock <> "/quote"
-#     StockfighterIO.get(s).body
-#   end
-# end
 
 
 
@@ -51,4 +40,4 @@
 # end
 
 # %Job{account: "EXB123456", goal: 100000, inv: 0, maxPrice: 4315, maxSize: 100, symbol: "FOOBAR", venue: "TESTEX"}
-j = %Job{account: "BN50535469", goal: 1000000, inv: 100, maxPrice: 4315, maxSize: 20000, symbol: "SLC", venue: "IBVEX"}   
+# j = %Job{account: "BN50535469", goal: 1000000, inv: 100, maxPrice: 4315, maxSize: 20000, symbol: "SLC", venue: "IBVEX"}   
