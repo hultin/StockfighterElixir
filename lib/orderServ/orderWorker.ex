@@ -38,28 +38,27 @@ defmodule OrderWorker do
 
   def handle_call(:killOrder, _from, %OrderWorker{} = st) do
     new_oStatus = OrderStatus.cancel(st.oStatus)
-    OrderRecord.reportStatus(st.recordPID, new_oStatus)
-    {:stop, :normal, %{st | oStatus: new_oStatus}}
+    process_order(st, new_oStatus)
   end
 
   def handle_info(:update, %OrderWorker{retries: 0} = st) do
     new_oStatus = OrderStatus.cancel(st.oStatus)
-    OrderRecord.reportStatus(st.recordPID, new_oStatus)
-    {:stop, :normal, %{st | oStatus: new_oStatus}}
+    process_order(st, new_oStatus)
   end
 
   def handle_info(:update, %OrderWorker{} = st) do
     new_oStatus = OrderStatus.get(st.oStatus)
-    if OrderStatus.filled?(new_oStatus) do
-      OrderRecord.reportStatus(st.recordPID, new_oStatus)
-      {:stop, :normal, %{st | oStatus: new_oStatus}}
-    else
-      Process.send_after(self, :update, 1000)
-      {:noreply, %{st | retries: (st.retries-1), oStatus: new_oStatus}}
-    end
+    process_order(st, new_oStatus)
   end
 
-  def castStatus(recordPID, %OrderStatus{} = oStatus) do
-    GenServer.cast(recordPID, oStatus)
+  def process_order(st, new_oStatus = %OrderStatus{open: true}) do
+    Process.send_after(self, :update, 1000)
+    {:noreply, %{st | retries: (st.retries-1), oStatus: new_oStatus}}
   end
+
+  def process_order(st, new_oStatus = %OrderStatus{open: false}) do
+    OrderRecord.reportStatus(st.recordPID, new_oStatus)
+    {:stop, :normal, %{st | oStatus: new_oStatus}}
+  end
+
 end

@@ -105,7 +105,6 @@ defmodule PrepTest do
       price: randInRange(1000, 6000), 
       orderType: "limit", 
       qty: randInRange(2, 500)}
-    testMap(%Order{})
     Order.place o
   end
 
